@@ -34,7 +34,7 @@ import os
 from metrics import fs_ratio, fs_abs
 
 
-entries = os.listdir('pabulib/poznan')
+entries = os.listdir('pabulib/amsterdam_districts')
 df=pd.read_excel('results/test_greedy.ods')
 X=[i for i in range(len(entries))]
 S=[]
@@ -43,7 +43,7 @@ S2=[]
 
 for st in entries:
 	print(st)
-	instance, profile = parse_pabulib('pabulib/poznan/'+st)
+	instance, profile = parse_pabulib('pabulib/amsterdam_districts/'+st)
 	output2 = method_of_equal_shares(instance, profile, sat_class=Cost_Sat)
 	s2=float(avg_satisfaction(instance, profile, output2, Cost_Sat))
 	gini2=float(gini_coefficient_of_satisfaction(instance, profile, output2, Cost_Sat))
@@ -56,21 +56,21 @@ for st in entries:
 	l=[p for p in instance]
 	shuffle(l)
 
-	output = gb.greedy_budgeting(instance, profile, Cost_Sat,l)
-	s=float(avg_satisfaction(instance, profile, output, Cost_Sat))
-	gini1=float(gini_coefficient_of_satisfaction(instance, profile, output, Cost_Sat))
-	CC1=float(percent_non_empty_handed(instance,profile,output))
-	ratio1=float(fs_ratio(instance,profile,output,sat_class=Cost_Sat))
-	diff1=float(fs_abs(instance,profile,output,sat_class=Cost_Sat))
-	S.append(diff1)
-	print(ratio1)
+	#output = gb.greedy_budgeting(instance, profile, Cost_Sat,l)
+	#s=float(avg_satisfaction(instance, profile, output, Cost_Sat))
+	#gini1=float(gini_coefficient_of_satisfaction(instance, profile, output, Cost_Sat))
+	#CC1=float(percent_non_empty_handed(instance,profile,output))
+	#ratio1=float(fs_ratio(instance,profile,output,sat_class=Cost_Sat))
+	#diff1=float(fs_abs(instance,profile,output,sat_class=Cost_Sat))
+	#S.append(diff1)
+	#print(ratio1)
 
 
-	data=[len([b for b in profile]),len([p for p in instance]),instance.budget_limit,s,gini1,CC1,ratio1,diff1]
-	data2=[len([b for b in profile]),len([p for p in instance]),instance.budget_limit,s,gini2,CC2,ratio2,diff2]
-	df[st]=data
+	#data=[len([b for b in profile]),len([p for p in instance]),instance.budget_limit,s,gini1,CC1,ratio1,diff1]
+	data2=[len([b for b in profile]),len([p for p in instance]),instance.budget_limit,s2,gini2,CC2,ratio2,diff2]
+	#df[st]=data
 	df2[st]=data2
-	df.to_excel("results/test_greedy.ods", sheet_name="test_input", index=False)
+	#df.to_excel("results/test_greedy.ods", sheet_name="test_input", index=False)
 	df2.to_excel("results/test_mes.ods", sheet_name="test_input", index=False)
 
 plt.figure(figsize=(5, 2.7), layout='constrained')

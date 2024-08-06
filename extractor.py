@@ -48,13 +48,16 @@ from metrics import fs_ratio, fs_abs
 
 
 entries = []
+print(os.listdir('pabulib'))
 for str in os.listdir('pabulib'):
 	entries+= os.listdir('pabulib/'+str)
+print(len(entries))
+
 df=pd.read_excel('results/test_greedy.ods')
 
 X=[i for i in range(len(entries))]
 S=[]
-df2=pd.read_excel('results/test.ods')
+df2=pd.read_excel('results/test_mes.ods')
 S2=[]
 S3=[]
 
