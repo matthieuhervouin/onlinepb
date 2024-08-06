@@ -20,19 +20,6 @@ b2 = ApprovalBallot({p1, p2, p3})
 b3 = ApprovalBallot({p3})
 profile=ApprovalProfile([b1,b2,b3])
 """
-def str_to_float(s):
-	n=''
-	d=''
-	b=0
-	for i in s:
-		if not b and i != '/':
-			n+=i 
-		if b:
-			d+=i
-		if i=='/':
-			b=1
-	return float(n)/float(d)
-
 from random import shuffle
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -48,52 +35,45 @@ from metrics import fs_ratio, fs_abs
 
 
 entries = []
+entries2= []
 for str in os.listdir('pabulib'):
-	entries+= os.listdir('pabulib/'+str)
-df=pd.read_excel('results/test_greedy.ods')
+	li= os.listdir('pabulib/'+str)
+	entries2+= li
+	for i in range(len(li)):
+		li[i]=str+'/'+li[i]
+	entries+=li
 
+df=pd.read_excel('results/test_greedy.ods')
 X=[i for i in range(len(entries))]
 S=[]
-df2=pd.read_excel('results/test.ods')
+df2=pd.read_excel('results/test_mes.ods')
 S2=[]
-S3=[]
+df3=pd.read_excel('results/test.ods')
 
-for st in entries: #change the index of columns when you want another measure
-	S.append(df[st][3])
-	S2.append(df2[st][3])
-	S3.append(df2[st][3]-df[st][3])
-	#if df[st][3]!=df2[st][3]:
-		#print("different")
+for i,st in enumerate(entries):
+	st2=entries2[i]
+	print(st)
+	instance, profile = parse_pabulib('pabulib/'+st)
+	output2 = method_of_equal_shares(instance, profile, sat_class=Cost_Sat)
+	s2=float(avg_satisfaction(instance, profile, output2, Cost_Sat))
+	gini2=df2[st2][4]
+	CC2=df2[st2][5]
+	ratio2=df[st2][6]
+	diff2=df2[st2][7]
+	S2.append(s2)
+	S.append(df[st2][3])
 
-
-for i in range(len(S)):
-	min=S[i]
-	k=i
-	for j in range(i+1,len(S)):
-		if S[j]<min:
-			k=j 
-			min=S[j]
-	tmp=S[i]
-	tmp2=S2[i]
-	tmp3=S3[i]
-	S[i]=min 
-	S2[i]=S2[k]
-	S3[i]=S3[k]
-	S[k]=tmp 
-	S2[k]=tmp2
-	S3[k]=tmp3
-
-
-
-
+	
+	data3=[len([b for b in profile]),len([p for p in instance]),instance.budget_limit,s2,gini2,CC2,ratio2,diff2]
+	df3[st2]=data3
+	df3.to_excel("results/test.ods", sheet_name="test_input", index=False)
 
 plt.figure(figsize=(5, 2.7), layout='constrained')
 plt.plot(X,S,label='greedy',color='red')
-plt.plot(X,S2,label='mes',color='blue')
-plt.plot(X,S3,label='mes - greedy',color='green')
+plt.plot(X,S2,label='mes')
 plt.xlabel('instance')
-plt.ylabel('avg sat')
-plt.title('avg sat')
+plt.ylabel('Avg sat')
+plt.title('measure')
 plt.legend(loc='upper left')
 plt.show()
 
