@@ -62,11 +62,15 @@ S2=[]
 S3=[]
 
 for st in entries: #change the index of columns when you want another measure
-	S.append(df[st][3])
-	S2.append(df2[st][3])
-	S3.append(df2[st][3]-df[st][3])
+	S.append(df[st][7])
+	if df[st][7]>100000:
+		print(st)
+	S2.append(df2[st][7])
+	S3.append(df2[st][7]-df[st][7])
 	#if df[st][3]!=df2[st][3]:
 		#print("different")
+
+
 
 
 for i in range(len(S)):
@@ -86,6 +90,9 @@ for i in range(len(S)):
 	S2[k]=tmp2
 	S3[k]=tmp3
 
+print('mes',sum(S2)/len(S2))
+print('greedy',sum(S)/len(S))
+
 
 
 
@@ -95,8 +102,8 @@ plt.plot(X,S,label='greedy',color='red')
 plt.plot(X,S2,label='mes',color='blue')
 plt.plot(X,S3,label='mes - greedy',color='green')
 plt.xlabel('instance')
-plt.ylabel('avg sat')
-plt.title('avg sat')
+plt.ylabel('distance to fs')
+plt.title('distance to fs')
 plt.legend(loc='upper left')
 plt.show()
 
