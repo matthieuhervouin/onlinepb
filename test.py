@@ -42,15 +42,14 @@ for str in os.listdir('pabulib'):
 	for i in range(len(li)):
 		li[i]=str+'/'+li[i]
 	entries+=li
-df2=pd.read_excel('results/test_mes.ods')
-df=pd.read_excel('results/test_greedy.ods')
+df2=pd.read_excel('results/test_mesc.ods')
 
 for i,st in enumerate(entries):
 	st2=entries2[i]
 	if st2 not in df2:
 		print(st)
 		instance, profile = parse_pabulib('pabulib/'+st)
-		output2 = method_of_equal_shares(instance, profile, sat_class=Cost_Sat)
+		output2 = method_of_equal_shares(instance, profile, sat_class=Cost_Sat,voter_budget_increment=1)
 		s2=float(avg_satisfaction(instance, profile, output2, Cost_Sat))
 		gini2=float(gini_coefficient_of_satisfaction(instance, profile, output2, Cost_Sat))
 		CC2=float(percent_non_empty_handed(instance, profile, output2))
@@ -61,26 +60,10 @@ for i,st in enumerate(entries):
 
 		data2=[len([b for b in profile]),len([p for p in instance]),instance.budget_limit,s2,gini2,CC2,ratio2,diff2]
 		df2[st2]=data2
-		df2.to_excel("results/test_mes.ods", sheet_name="test_input", index=False)
+		df2.to_excel("results/test_mesc.ods", sheet_name="test_input", index=False)
 
 		
-	if st2 not in df:
-		instance, profile = parse_pabulib('pabulib/'+st)
-		l=[p for p in instance]
-		shuffle(l)
-		output = gb.greedy_budgeting(instance, profile, Cost_Sat,l)
-		s=float(avg_satisfaction(instance, profile, output, Cost_Sat))
-		gini1=float(gini_coefficient_of_satisfaction(instance, profile, output, Cost_Sat))
-		CC1=float(percent_non_empty_handed(instance,profile,output))
-		ratio1=float(fs_ratio(instance,profile,output,sat_class=Cost_Sat))
-		diff1=float(fs_abs(instance,profile,output,sat_class=Cost_Sat))
-		print(ratio1)
-
-
-		data=[len([b for b in profile]),len([p for p in instance]),instance.budget_limit,s,gini1,CC1,ratio1,diff1]
-		df[st2]=data
-		df.to_excel("results/test_greedy.ods", sheet_name="test_input", index=False)
-		
+	
 
 
 
